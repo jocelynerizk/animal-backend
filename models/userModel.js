@@ -19,6 +19,7 @@ const userSchema = new Schema({
     region: { type: String },
   },
   role: {
+    
     type: String,
     enum: ["admin", "team", "company"], required: true, default: 'company'
   },
