@@ -19,7 +19,7 @@ const isAuthenticated = (roles) => {
         message: "No token, unable to check if authenticated",
       });
     }
-  req.decoded = decoded;
+
     try {
       const credentials = jwt.verify(token, process.env.JWT_SECRET);
       const hasAccess = roles.includes(credentials.role);

@@ -105,7 +105,7 @@ const register = async (req, res) => {
       newUser.email,
       password
     );
-    // newUser.firebasUid = firebaseUser.user.uid;
+    newUser.firebasUid = firebaseUser.user.uid;
     await newUser.save();
     await sendEmailVerification(auth.currentUser);
     res.status(200).json({
