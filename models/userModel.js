@@ -1,32 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
-  fullName: {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-  },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  phoneNumber: { type:  String },
-  vatnumb: { type: String },
-  chambrecommerce: { type: String },
-  fullAddress: {
-    long: { type: String },
-    lat: { type: String },
-    dept: { type: String },
-    caza: { type: String },
-    region: { type: String },
-  },
+  // verfied:{type:Boolean ,default:false}
+  phoneNumber: { type: Number, required: true, unique: true },
   role: {
-    
     type: String,
-    enum: ["admin", "team", "company"], required: true, default: 'company'
+    enum: ["admin", "employee", "client"],
+    required: true,
+    default: "client",
   },
-  firebaseUid: { type: String },
 },
   { timestamps: true });
+const user = model("user", userSchema);
 
-const UserModel = model('users', userSchema);
-
-module.exports = UserModel;
+module.exports = user;
