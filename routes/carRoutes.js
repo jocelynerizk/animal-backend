@@ -22,10 +22,10 @@ router.delete('/delete/:ID',deleteById);
 router.get('/getById/:ID', getByID);
 router.get('/getAll', getAll);
 router.put('/update/:ID', update);
-router.get('/getByCatID/:CatID', getByCatID);
-router.get('/getByStatus/:Status', getByStatus);
-router.get('/getByBarcode/:Barcode', getByBarcode);
-router.get('/getDetails/:CatID', getDetails);
-router.get('/gettasks/:CatID', gettasks);
+router.get('/getByCatID/:catID', getByCatID);
+router.get('/getByStatus/:status', getByStatus);
+router.get('/getByBarcode/:barcode', getByBarcode);
+router.get('/getDetails/:ownerid', getDetails);
+router.get('/gettasks/:teamid', gettasks);
 
 module.exports = router;

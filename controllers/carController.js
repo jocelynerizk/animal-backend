@@ -181,24 +181,24 @@ const update = async (req, res) => {
 
 
 const getByCatID = async (req, res) => {
-  const { categoryID } = req.params;
-
+  const { catID } = req.params;
+console.log(catID)
   try {
-    const existingCategory = await Category.findById(categoryID);
+    const existingCategory = await Category.findById(catID);
 
     if (!existingCategory) {
       return res.status(404).json({
         success: false,
-        message: `Category with ID ${categoryID} does not exist`,
+        message: `Category with ID ${catID} does not exist`,
       });
     }
 
-    const cars = await Car.find({ catID: categoryID }).populate('catID');
+    const cars = await Car.find({ catID: catID }).populate('catID');
 
     if (cars.length === 0) {
       return res.status(404).json({
         success: false,
-        message: `No cars found for the category with ID ${categoryID}`,
+        message: `No cars found for the category with ID ${catID}`,
       });
     }
 
