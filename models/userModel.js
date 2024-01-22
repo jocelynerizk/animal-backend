@@ -8,13 +8,20 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     // verfied:{type:Boolean ,default:false}
-    phoneNumber: { type: Number, required: true, unique: true },
+    phoneNumber: { type: Number, required: true },
     role: {
       type: String,
       enum: ["admin", "employee", "client"],
       required: true,
       default: "client",
     },
+    fullAddress: {
+      long: { type: String },
+      lat: { type: String },
+      caza: { type: String },
+      region: { type: String },
+    },
+    
     firebaseUid: { type: String },
   },
   { timestamps: true }
