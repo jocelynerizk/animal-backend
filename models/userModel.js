@@ -21,7 +21,7 @@ const userSchema = new Schema(
       caza: { type: String },
       region: { type: String },
     },
-    
+
     firebaseUid: { type: String },
   },
   { timestamps: true }

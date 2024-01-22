@@ -13,6 +13,7 @@ const {
     getByBarcode,
     getDetails,
     gettasks,
+    getAllDetails,
 
 } = require('../controllers/carController');
 const isAuthenticated = require("../middlewares/auth");
@@ -27,5 +28,6 @@ router.get('/getByStatus/:status', getByStatus);
 router.get('/getByBarcode/:barcode', getByBarcode);
 router.get('/getDetails/:ownerid', getDetails);
 router.get('/gettasks/:teamid', gettasks);
+router.get('/getAllDetails/', getAllDetails);
 
 module.exports = router;

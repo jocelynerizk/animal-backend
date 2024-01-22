@@ -1,6 +1,7 @@
 const Car = require('../models/carModel');
 const Category = require('../models/categoryModel');
 const User = require('../models/userModel');
+
 const getAll = async (req, res) => {
   try {
     const cars = await Car.find({});
@@ -20,9 +21,9 @@ const getAll = async (req, res) => {
 
 const getByID = async (req, res) => {
   try {
-    const cars = await Car.findById(req.params.ID);
+    const car = await Car.findById(req.params.ID);
 
-    if (!cars) {
+    if (!car) {
       return res.status(404).json({
         success: false,
         message: 'Data not found',
@@ -32,7 +33,7 @@ const getByID = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Data retrieved successfully',
-      data: cars,
+      data: car,
     });
   } catch (error) {
     res.status(500).json({
@@ -45,12 +46,14 @@ const getByID = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const { immatricule, brand, maxweight, catID, teamid, superid, ownerid, bookdate, caracteristic, status, certidate, loger, reference, barcode, dtenservice,remarks } = req.body;
+    const { catID, teamid, superid, ownerid, ...carData } = req.body;
 
-    const category = await Category.findById(catID);
-    const team = await User.findById(teamid);
-    const superUser = await User.findById(superid);
-    const owner = await User.findById(ownerid);
+    const [category, team, superUser, owner] = await Promise.all([
+      Category.findById(catID),
+      User.findById(teamid),
+      User.findById(superid),
+      User.findById(ownerid),
+    ]);
 
     if (!category || !team || !superUser || !owner) {
       return res.status(400).json({
@@ -59,24 +62,12 @@ const add = async (req, res) => {
       });
     }
 
-
     const newCar = new Car({
-      immatricule,
-      brand,
-      maxweight,
+      ...carData,
       catID,
       teamid,
       superid,
       ownerid,
-      bookdate,
-      caracteristic,
-      status,
-      certidate,
-      loger,
-      reference,
-      barcode,
-      dtenservice,
-      remarks
     });
 
     await newCar.save();
@@ -94,9 +85,9 @@ const add = async (req, res) => {
     });
   }
 };
+
 const deleteById = async (req, res) => {
   try {
-    // Fetch the car by ID
     const car = await Car.findById(req.params.ID);
 
     if (!car) {
@@ -106,7 +97,6 @@ const deleteById = async (req, res) => {
       });
     }
 
-    // Check if the status is not 'pending'
     if (car.status !== 'pending') {
       return res.status(400).json({
         success: false,
@@ -114,7 +104,6 @@ const deleteById = async (req, res) => {
       });
     }
 
-    // Delete the car
     const result = await Car.deleteOne({ _id: req.params.ID });
 
     if (result.deletedCount === 0) {
@@ -138,23 +127,26 @@ const deleteById = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  const { immatricule, brand, maxweight, catID, teamid, superid, ownerid, bookdate, caracteristic, status, certidate, loger, reference, barcode, dtenservice, remarks } = req.body;
-  const category = await Category.findById(catID);
-  const team = await User.findById(teamid);
-  const superUser = await User.findById(superid);
-  const owner = await User.findById(ownerid);
-
-  if (!category || !team || !superUser || !owner) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid data. Please check your input.',
-    });
-  }
+  const { catID, teamid, superid, ownerid, ...carData } = req.body;
 
   try {
+    const [category, team, superUser, owner] = await Promise.all([
+      Category.findById(catID),
+      User.findById(teamid),
+      User.findById(superid),
+      User.findById(ownerid),
+    ]);
+
+    if (!category || !team || !superUser || !owner) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid data. Please check your input.',
+      });
+    }
+
     const car = await Car.findByIdAndUpdate(
       req.params.ID,
-      { immatricule, brand, maxweight, catID, teamid, superid, ownerid, bookdate, caracteristic, status, certidate, loger, reference, barcode, dtenservice, remarks },
+      { ...carData, catID, teamid, superid, ownerid },
       { new: true } // To return the updated document
     );
 
@@ -179,10 +171,9 @@ const update = async (req, res) => {
   }
 };
 
-
 const getByCatID = async (req, res) => {
   const { catID } = req.params;
-console.log(catID)
+
   try {
     const existingCategory = await Category.findById(catID);
 
@@ -193,7 +184,7 @@ console.log(catID)
       });
     }
 
-    const cars = await Car.find({ catID: catID }).populate('catID');
+    const cars = await Car.find({ catID }).populate('catID');
 
     if (cars.length === 0) {
       return res.status(404).json({
@@ -219,8 +210,8 @@ const getByStatus = async (req, res) => {
   const { status } = req.params;
 
   try {
-    // Validate status
     const validStatusValues = ['pending', 'tobeaudited', 'audited', 'locked', 'conforme', 'Notconforme', 'horservice'];
+
     if (!validStatusValues.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -280,7 +271,6 @@ const getDetails = async (req, res) => {
   const { ownerid } = req.params;
 
   try {
-    // Find user by ownerid
     const user = await User.findById(ownerid);
 
     if (!user) {
@@ -290,7 +280,6 @@ const getDetails = async (req, res) => {
       });
     }
 
-    // Find cars by ownerid, populate ownerid and catID
     const cars = await Car.find({ ownerid })
       .populate('ownerid')
       .populate('catID');
@@ -320,7 +309,6 @@ const gettasks = async (req, res) => {
   const { teamid } = req.params;
 
   try {
-    // Find user by teamid
     const user = await User.findById(teamid);
 
     if (!user) {
@@ -330,21 +318,33 @@ const gettasks = async (req, res) => {
       });
     }
 
-    // Find cars by teamid, populate teamid and catID
-    const cars = await Car.find({ teamid })
-      .populate('teamid')
+    await getAllDetails(req, res);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Unable to fetch data',
+      error: error.message,
+    });
+  }
+};
+
+const getAllDetails = async (req, res) => {
+  try {
+    const users = await User.find();
+    const cars = await Car.find()
+      .populate('ownerid')
       .populate('catID');
 
-    if (cars.length === 0) {
+    if (users.length === 0 && cars.length === 0) {
       return res.status(404).json({
         success: false,
-        message: `No cars found for owner with ID: ${teamid}`,
+        message: 'No users or cars found',
       });
     }
 
     res.status(200).json({
       success: true,
-      user: user,
+      users: users,
       cars: cars,
     });
   } catch (error) {
@@ -355,6 +355,7 @@ const gettasks = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   getAll,
   getByID,
@@ -366,4 +367,5 @@ module.exports = {
   getByBarcode,
   getDetails,
   gettasks,
+  getAllDetails,
 };
