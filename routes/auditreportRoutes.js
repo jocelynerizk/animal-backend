@@ -18,6 +18,6 @@ router.delete('/delete/:ID',deleteById);
 router.get('/getById/:ID', getByID);
 router.get('/getByCarID/:CarID', getByCarID);
 router.get('/getAll', getAll);
-router.put('/update/:ID', update);
+router.put('/update/:ID', ,isAuthenticated(['admin', 'employee']),update);
 
 module.exports = router;
