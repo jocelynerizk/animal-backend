@@ -13,11 +13,11 @@ const {
 } = require('../controllers/requirementController');
 const isAuthenticated = require("../middlewares/auth");
 
-router.post('/add', add)
-router.delete('/delete/:ID',deleteById);
+router.post('/add',isAuthenticated(['admin']),, add)
+router.delete('/delete/:ID',isAuthenticated(['admin']),deleteById);
 router.get('/getById/:ID', getByID);
 router.get('/getAll', getAll);
-router.put('/update/:ID', update);
+router.put('/update/:ID',isAuthenticated(['admin']), update);
 router.get('/getAllByCategoryID/:categoryID', getAllByCategoryID);
 
 
