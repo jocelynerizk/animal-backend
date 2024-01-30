@@ -14,7 +14,7 @@ const {
 const isAuthenticated = require("../middlewares/auth");
 
 router.post('/add', isAuthenticated(['admin', 'employee']), add)
-router.delete('/delete/:ID', isAuthenticated(['admin', 'employee']), deleteById);
+router.delete('/delete/:ID', isAuthenticated(['admin']), deleteById);
 router.get('/getById/:ID', getByID);
 router.get('/getByCarID/:CarID', getByCarID);
 router.get('/getAll', getAll);

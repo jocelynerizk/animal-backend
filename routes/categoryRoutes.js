@@ -12,11 +12,11 @@ const {
 } = require('../controllers/categoryController');
 const isAuthenticated = require("../middlewares/auth");
 
-router.post('/add',isAuthenticated(['admin', 'employee']), add)
-router.delete('/delete/:ID',isAuthenticated(['admin', 'employee']),deleteById);
+router.post('/add',isAuthenticated(['admin']), add)
+router.delete('/delete/:ID',isAuthenticated(['admin']),deleteById);
 router.get('/getById/:ID', getByID);
 router.get('/getAll', getAll);
-router.put('/update/:ID',isAuthenticated(['admin', 'employee']), update);
+router.put('/update/:ID',isAuthenticated(['admin']), update);
 
 
 module.exports = router;
