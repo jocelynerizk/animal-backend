@@ -13,7 +13,7 @@ const {
 } = require('../controllers/requirementController');
 const isAuthenticated = require("../middlewares/auth");
 
-router.post('/add',isAuthenticated(['admin']),, add)
+router.post('/add',isAuthenticated(['admin']), add)
 router.delete('/delete/:ID',isAuthenticated(['admin']),deleteById);
 router.get('/getById/:ID', getByID);
 router.get('/getAll', getAll);
